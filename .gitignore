@@ -1,0 +1,9 @@
+.env
+
+node_modules
+
+.vscode/
+
+.idea/
+
+test.js
