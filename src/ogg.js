@@ -1,4 +1,6 @@
 import axios from "axios";
+import Ffmpeg from "fluent-ffmpeg";
+import installer from "@ffmpeg-installer/ffmpeg";
 import { createWriteStream } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
@@ -6,10 +8,18 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 class OggConverter {
-  constructor() {}
-  toMo3(input, output) {
+  constructor() {
+    Ffmpeg.setFfmpegPath(installer.path);
+  }
+  toMp3(input, output) {
     try {
-      const outputPath = resolve(dirname());
+      const outputPath = resolve(dirname(input), `${output}.mp3`);
+      return new Promise((resolve, reject) => {
+        Ffmpeg(input)
+          .inputOption("-t 30")
+          .output(outputPath)
+          .on("end", () => resolve(outputPath));
+      });
     } catch (e) {
       console.log("Error while creating mp3", e.message);
     }
