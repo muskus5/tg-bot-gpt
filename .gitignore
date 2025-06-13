@@ -1,13 +1,8 @@
 .env
-
 node_modules
-
 .vscode/
-
 .idea/
-
 test.js
-
 token.md
-
 config
+voices
