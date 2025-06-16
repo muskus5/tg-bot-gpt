@@ -1,5 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
-import 'dotenv/config';
+import config from "config";
+import { createReadStream } from "fs";
 
 class OpenAI {
   constructor(apiKey) {
@@ -11,7 +12,16 @@ class OpenAI {
 
   chat() {}
 
-  transcription() {}
+  async transcription(filepath) {
+    try {
+      const response = await this.openai.createTranscription(
+        createReadStream(filepath),
+        "whisper-1"
+      );
+    } catch (e) {
+      console.log("Error while transcription", e.message);
+    }
+  }
 }
 
-export const openai = new OpenAI();
+export const openai = new OpenAI(config.get("OPENAI_KEY"));
