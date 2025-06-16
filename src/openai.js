@@ -1,7 +1,13 @@
-import {Configuration, OpenAIApi} from 'openai'
+import { Configuration, OpenAIApi } from "openai";
+import 'dotenv/config';
 
 class OpenAI {
-  constructor() {}
+  constructor(apiKey) {
+    const configuration = new Configuration({
+      apiKey,
+    });
+    this.openai = new OpenAIApi(configuration);
+  }
 
   chat() {}
 
