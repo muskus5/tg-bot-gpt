@@ -13,23 +13,24 @@ class OpenAIWrapper {
     this.openai = new OpenAI({
       apiKey,
       baseURL: "https://openrouter.ai/api/v1", // указание OpenRouter как базового URL
+      // defaultHeaders: {
+      //   "HTTP-Referer": "http://localhost", // или тот домен, который указал в профиле
+      // },
     });
   }
 
-async chat(messages) {
-  try {
-    const response = await this.openai.chat.completions.create({
-      model: "openai/gpt-3.5-turbo",
-      messages,
-    });
-    return response.choices?.[0]?.message;
-  } catch (e) {
-    console.log("Error while gpt chat", e.message);
-    return null;
+  async chat(messages) {
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: "openai/gpt-3.5-turbo",
+        messages,
+      });
+      return response.choices?.[0]?.message;
+    } catch (e) {
+      console.log("Error while gpt chat", e.message);
+      return null;
+    }
   }
-}
-
-
 
   async transcription(filepath) {
     try {

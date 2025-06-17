@@ -26,19 +26,12 @@ bot.command("start", async (ctx) => {
 });
 
 
-// bot.on(message("voice"), async (ctx) => {
+// bot.on(message("text"), async (ctx) => {
 //   ctx.session ??= INITIAL_SESSION;
 //   try {
 //     await ctx.reply(code("Cообщение принял. Жду ответ от сервера..."));
-//     const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id);
-//     const userId = String(ctx.message.from.id);
-//     const oggPath = await ogg.create(link.href, userId);
-//     const mp3Path = await ogg.toMp3(oggPath, userId);
 
-//     const text = await openai.transcription(mp3Path);
-//     await ctx.reply(code(`Ваш запрос: ${text}`));
-
-//     ctx.session.messages.push({ role: openai.roles.USER, content: text });
+//     ctx.session.messages.push({ role: openai.roles.USER, content: ctx.message.text });
 
 //     const response = await openai.chat(ctx.session.messages);
 //     if (!response?.content) throw new Error("Нет ответа от модели");
@@ -47,29 +40,51 @@ bot.command("start", async (ctx) => {
 
 //     await ctx.reply(response.content);
 //   } catch (e) {
-//     console.log(`Error while voice message`, e.message);
-//     await ctx.reply("Произошла ошибка при обработке голосового сообщения.");
+//     console.log(`Error while text message`, e.message);
+//     await ctx.reply("Произошла ошибка при обработке текста.");
 //   }
 // });
+// 
+// 
+// 
+// 
+// 
+// 
 
 bot.on(message("text"), async (ctx) => {
-  ctx.session ??= INITIAL_SESSION;
-  try {
-    await ctx.reply(code("Cообщение принял. Жду ответ от сервера..."));
+  ctx.session ??= { messages: [], isProcessing: false };
 
-    ctx.session.messages.push({ role: openai.roles.USER, content: ctx.message.text });
+  if (ctx.session.isProcessing) {
+    return ctx.reply("Пожалуйста, дождитесь ответа на предыдущее сообщение.");
+  }
+
+  ctx.session.isProcessing = true;
+
+  try {
+    await ctx.reply("Сообщение принял. Жду ответ от сервера...");
+    await ctx.sendChatAction("typing"); // Показываем «печатает»
+
+    ctx.session.messages.push({
+      role: openai.roles.USER, content: ctx.message.text
+    });
 
     const response = await openai.chat(ctx.session.messages);
     if (!response?.content) throw new Error("Нет ответа от модели");
 
-    ctx.session.messages.push({ role: openai.roles.ASSISTANT, content: response.content });
+    ctx.session.messages.push({
+      role: openai.roles.ASSISTANT,
+      content: response.content,
+    });
 
     await ctx.reply(response.content);
   } catch (e) {
-    console.log(`Error while text message`, e.message);
+    console.log("Error while text message", e.message);
     await ctx.reply("Произошла ошибка при обработке текста.");
+  } finally {
+    ctx.session.isProcessing = false;
   }
 });
+
 
 
 bot.launch();
