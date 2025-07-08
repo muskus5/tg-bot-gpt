@@ -23,6 +23,12 @@ bot.command("start", async (ctx) => {
   await ctx.reply("Жду вашего текстового сообщения");
 });
 
+bot.on(message("voice"), async (ctx) => {
+  await ctx.reply(
+    "Голосовые сообщения не поддерживаются. Пожалуйста, отправьте текст."
+  );
+});
+
 bot.on(message("text"), async (ctx) => {
   ctx.session ??= { messages: [], isProcessing: false };
 
