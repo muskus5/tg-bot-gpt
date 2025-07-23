@@ -15,7 +15,7 @@ bot.use(session());
 
 bot.command("new", async (ctx) => {
   ctx.session = INITIAL_SESSION;
-  await ctx.reply("Жду вашего текстового сообщения ТЕСТ CI/CD");
+  await ctx.reply("Жду вашего текстового сообщения");
 });
 
 bot.command("start", async (ctx) => {
