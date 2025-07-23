@@ -30,12 +30,8 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             mkdir -p ~/app/config
-            cat > ~/app/config/default.json << 'EOF'
-            ${{ secrets.DEFAULT_JSON }}
-            EOF
-            cat > ~/app/config/production.json << 'EOF'
-            ${{ secrets.PRODUCTION_JSON }}
-            EOF
+            echo '${{ secrets.DEFAULT_JSON }}' > ~/app/config/default.json
+            echo '${{ secrets.PRODUCTION_JSON }}' > ~/app/config/production.json
 
       - name: Run docker on VPS
         uses: appleboy/ssh-action@v1.0.3
