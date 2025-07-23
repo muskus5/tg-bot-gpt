@@ -43,9 +43,9 @@ jobs:
           command_timeout: 1200s
           script: |
             cd ~/app
-            docker stop app || true
-            docker rm app || true
-            docker image rm app-image || true
+            docker stop tg_bot || true
+            docker rm tg_bot || true
+            docker image rm tg_bot || true
             docker system prune -af --volumes
-            docker build -t app-image .
-            docker run -d -p 3000:3000 --name app --rm app-image
+            docker build -t tg_bot .
+            docker run -d -p 3000:3000 --name tg_bot --rm tg_bot
